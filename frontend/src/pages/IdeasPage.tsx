@@ -2,9 +2,12 @@ import IdeaForm from '../features/ideas/IdeaForm';
 import IdeaList from '../features/ideas/IdeaList';
 import { useState } from 'react';
 import type { IdeaListProps } from '../features/ideas/IdeaList';
+import LoginPage from '../features/auth/LoginPage';
 
 function IdeasPage() {
   const [globalState, setGlobalState] = useState<IdeaListProps>({ list: [] });
+
+  
 
   return (
     <div className="app-shell">

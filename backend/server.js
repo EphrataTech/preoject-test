@@ -18,6 +18,8 @@ app.get("/", (req, res) => {
   res.send("Idea Tracker API is running");
 });
 
+
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {

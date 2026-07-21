@@ -1,15 +1,40 @@
 import { useState, type FormEvent } from 'react';
+import axios from 'axios';
+import SubmitButton from '../../components/SubmitButton'; // adjust path to wherever you saved it
 
-// This component is intentionally not wired up to any route or navigation.
-// It exists as a standalone UI screen — hook it up (routing, auth state,
-// API call, validation, etc.) as part of the exercise.
+interface LoginPageProps {
+  onLoginSuccess: () => void;
+}
 
-function LoginPage() {
+function LoginPage({ onLoginSuccess }: LoginPageProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError('');
+
+    if (!email || !password) {
+      setError('Please enter both email and password.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await axios.post('http://localhost:5000/login', {
+        email,
+        password
+      });
+      localStorage.setItem('token', response.data.token);
+      onLoginSuccess();
+    } catch (err) {
+      setError('Invalid email or password.');
+      console.log('Login error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -36,7 +61,11 @@ function LoginPage() {
           placeholder="••••••••"
         />
 
-        <button type="submit">Log in</button>
+        {error && <p style={{ color: '#ef4444', fontSize: '13px' }}>{error}</p>}
+
+        <SubmitButton type="submit" disabled={loading}>
+          {loading ? 'Logging in...' : 'Log in'}
+        </SubmitButton>
       </form>
     </div>
   );
